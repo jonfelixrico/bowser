@@ -8,10 +8,22 @@ export class TurtleClientPoolService {
     this.internalPool[key] = client
   }
 
-  remove(key: string) {
+  removeViaKey(key: string) {
     const client = this.internalPool[key]
     delete this.internalPool[key]
-    return client
+    return client || null
+  }
+
+  removeViaClient(client: WebSocket) {
+    const entry = Object.entries(this.internalPool).find(
+      (entry) => entry[1] === client,
+    )
+
+    if (!entry) {
+      return null
+    }
+
+    return this.removeViaKey(entry[0])
   }
 
   get pool() {
