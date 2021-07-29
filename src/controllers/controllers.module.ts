@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common'
+import { CommandsController } from './commands/commands.controller'
 
-@Module({})
+@Module({
+  controllers: [CommandsController],
+})
 export class ControllersModule {}
