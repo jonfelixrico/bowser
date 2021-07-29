@@ -38,8 +38,7 @@ export class TurtleWsGateway
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
     const [incomingMessage] = args
     const { headers, url } = incomingMessage
-
-    const parsedUrl = new URL([headers.host, url].join('/'))
+    const parsedUrl = new URL(`ws://${headers.host}/${url}`)
     const params = parsedUrl.searchParams
 
     const label = params.get('label')
