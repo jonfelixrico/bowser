@@ -38,6 +38,11 @@ export class TurtleWsGateway
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
     const [incomingMessage] = args
     const { headers, url } = incomingMessage
+
+    /*
+     * It doesn't matter if we put ws:// or wss:// here really, the protocol has no bearing here.
+     * We're only putting it here so that URL will parse it properly
+     */
     const parsedUrl = new URL(`ws://${headers.host}/${url}`)
     const params = parsedUrl.searchParams
 
