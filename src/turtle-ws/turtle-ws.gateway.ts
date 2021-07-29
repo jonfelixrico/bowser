@@ -1,17 +1,23 @@
 import {
   OnGatewayConnection,
-  SubscribeMessage,
+  OnGatewayDisconnect,
   WebSocketGateway,
 } from '@nestjs/websockets'
+import { IncomingMessage } from 'http'
+import { URL } from 'url'
 
 @WebSocketGateway()
-export class TurtleWsGateway implements OnGatewayConnection {
-  handleConnection(client: any, ...args: any[]) {
-    console.debug(args)
+export class TurtleWsGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
+  handleDisconnect(client: any) {
+    throw new Error('Method not implemented.')
   }
 
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!'
+  handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
+    const [incomingMessage] = args
+    const { headers, url } = incomingMessage
+
+    const parsedUrl = new URL([headers.host, url].join('/'))
   }
 }
