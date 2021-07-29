@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common'
 import { EventBus } from '@nestjs/cqrs'
 import {
   OnGatewayConnection,
@@ -20,6 +21,7 @@ export class TurtleWsGateway
   constructor(
     private eventBus: EventBus,
     private pool: TurtleClientPoolService,
+    private logger: Logger,
   ) {}
 
   handleDisconnect(client: WebSocket) {
@@ -27,12 +29,17 @@ export class TurtleWsGateway
 
     if (!removed) {
       // TODO add logging -- this case is odd
+      this.logger.warn(
+        'An unknown client has disconnected.',
+        TurtleWsGateway.name,
+      )
       return
     }
 
     const [key] = removed
 
     this.eventBus.publish(new TurtleDisconnectedEvent(key))
+    this.logger.verbose(`Turtle ${key} has disconnected.`)
   }
 
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
@@ -60,6 +67,8 @@ export class TurtleWsGateway
         label,
       }),
     )
+
+    this.logger.verbose(`Turtle ${label} has connected.`)
 
     fromEvent<MessageEvent>(client, 'onmessage')
       .pipe(takeUntil(fromEvent(client, 'onclose'))) // avoid mem leak, release listener if disconnection occurred
