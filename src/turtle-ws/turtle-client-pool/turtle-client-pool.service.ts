@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 
 @Injectable()
 export class TurtleClientPoolService {
+  constructor(private logger: Logger) {}
+
   private internalPool: Record<string, WebSocket> = {}
 
   private get entries() {
@@ -10,6 +12,10 @@ export class TurtleClientPoolService {
 
   add(key: string, client: WebSocket) {
     this.internalPool[key] = client
+    this.logger.verbose(
+      `Added ${key} in the pool.`,
+      TurtleClientPoolService.name,
+    )
   }
 
   findViaKey(key: string): [string, WebSocket] {
