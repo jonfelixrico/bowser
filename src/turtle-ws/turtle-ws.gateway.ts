@@ -8,15 +8,28 @@ import { IncomingMessage } from 'http'
 import { URL } from 'url'
 import { TurtleConnectedEvent } from './events/turtle-connected.event'
 import { TurtleDisconnectedEvent } from './events/turtle-disconnected.event'
+import { TurtleClientPoolService } from './turtle-client-pool/turtle-client-pool.service'
 
 @WebSocketGateway()
 export class TurtleWsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private eventBus: EventBus) {}
+  constructor(
+    private eventBus: EventBus,
+    private pool: TurtleClientPoolService,
+  ) {}
 
   handleDisconnect(client: WebSocket) {
-    this.eventBus.publish(new TurtleDisconnectedEvent(client))
+    const removed = this.pool.removeViaClient(client)
+
+    if (!removed) {
+      // TODO add logging -- this case is odd
+      return
+    }
+
+    const [key] = removed
+
+    this.eventBus.publish(new TurtleDisconnectedEvent(key))
   }
 
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
@@ -26,16 +39,17 @@ export class TurtleWsGateway
     const parsedUrl = new URL([headers.host, url].join('/'))
     const params = parsedUrl.searchParams
 
+    const label = params.get('label')
+
+    this.pool.add(label, client)
+
     this.eventBus.publish(
       new TurtleConnectedEvent({
-        client,
-        id: params.get('label'),
-        payload: {
-          x: parseInt(params.get('x')),
-          y: parseInt(params.get('y')),
-          z: parseInt(params.get('z')),
-          bearing: parseInt(params.get('bearing')),
-        },
+        x: parseInt(params.get('x')),
+        y: parseInt(params.get('y')),
+        z: parseInt(params.get('z')),
+        bearing: parseInt(params.get('bearing')),
+        label,
       }),
     )
   }
