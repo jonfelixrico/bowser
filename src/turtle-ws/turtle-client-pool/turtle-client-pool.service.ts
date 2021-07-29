@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class TurtleClientPoolService {
-  private internalPool: Record<string, WebSocket>
+  private internalPool: Record<string, WebSocket> = {}
 
   add(key: string, client: WebSocket) {
     this.internalPool[key] = client
