@@ -4,8 +4,27 @@ import { Injectable } from '@nestjs/common'
 export class TurtleClientPoolService {
   private internalPool: Record<string, WebSocket> = {}
 
+  private get entries() {
+    return Object.entries(this.internalPool)
+  }
+
   add(key: string, client: WebSocket) {
     this.internalPool[key] = client
+  }
+
+  findViaKey(key: string): [string, WebSocket] {
+    const client = this.internalPool[key]
+
+    if (!client) {
+      return null
+    }
+
+    return [key, client]
+  }
+
+  findByClient(client: WebSocket): [string, WebSocket] {
+    const entry = this.entries.find((e) => e[1] === client)
+    return entry || null
   }
 
   removeViaKey(key: string) {
@@ -15,23 +34,14 @@ export class TurtleClientPoolService {
   }
 
   removeViaClient(clientToRemove: WebSocket): [string, WebSocket] {
-    const entry = Object.entries(this.internalPool).find(
-      (entry) => entry[1] === clientToRemove,
-    )
+    const entry = this.findByClient(clientToRemove)
 
     if (!entry) {
       return null
     }
 
-    const [key, client] = entry
-    this.removeViaKey(key)
+    this.removeViaKey(entry[0])
 
-    return [key, client]
-  }
-
-  get pool() {
-    return {
-      ...this.internalPool,
-    }
+    return entry
   }
 }
