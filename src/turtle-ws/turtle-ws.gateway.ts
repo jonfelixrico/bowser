@@ -59,6 +59,7 @@ export class TurtleWsGateway
 
     this.eventBus.publish(new TurtleConnectedEvent(payload))
 
+    this.pool.add(payload.label, client)
     this.logger.verbose(`Turtle ${payload.label} has connected.`)
 
     fromEvent<MessageEvent>(client, 'onmessage')
