@@ -1,7 +1,7 @@
 import { Body, Post } from '@nestjs/common'
 import { Controller } from '@nestjs/common'
 import { CommandBus } from '@nestjs/cqrs'
-import { SendTurtleInstructionsCommand } from 'src/commands/send-turtle-instructions.command'
+import { SendMessageToTurtleCommand } from 'src/commands/send-message-to-turtle.command'
 import { SendCommandDto } from '../dtos/send-command.dto'
 
 @Controller('commands')
@@ -12,8 +12,13 @@ export class CommandsController {
   async sendCommand(@Body() { commands }: SendCommandDto) {
     commands = commands || []
 
-    for (const command of commands) {
-      await this.commandBus.execute(new SendTurtleInstructionsCommand(command))
+    for (const { label, instructions } of commands) {
+      await this.commandBus.execute(
+        new SendMessageToTurtleCommand({
+          label,
+          message: JSON.stringify(instructions),
+        }),
+      )
     }
   }
 }
