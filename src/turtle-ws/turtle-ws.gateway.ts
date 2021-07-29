@@ -9,10 +9,18 @@ import { IncomingMessage } from 'http'
 import { fromEvent } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
-import { URL } from 'url'
 import { TurtleConnectedEvent } from '../events/turtle-connected.event'
 import { TurtleDisconnectedEvent } from '../events/turtle-disconnected.event'
 import { TurtleClientPoolService } from './turtle-client-pool/turtle-client-pool.service'
+
+interface ITurtleData {
+  label: string
+  x: number
+  y: number
+  z: number
+  bearing: number
+  fuelLevel: number
+}
 
 @WebSocketGateway()
 export class TurtleWsGateway
@@ -44,38 +52,21 @@ export class TurtleWsGateway
 
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
     const [incomingMessage] = args
-    const { headers, url } = incomingMessage
+    const { headers } = incomingMessage
 
-    /*
-     * It doesn't matter if we put ws:// or wss:// here really, the protocol has no bearing here.
-     * We're only putting it here so that URL will parse it properly
-     */
-    const parsedUrl = new URL(`ws://${headers.host}/${url}`)
-    const params = parsedUrl.searchParams
+    // TODO add error handling here if JSON.parse fails
+    const payload: ITurtleData = JSON.parse(headers['turtle-data'] as string)
 
-    const label = params.get('label')
+    this.eventBus.publish(new TurtleConnectedEvent(payload))
 
-    this.pool.add(label, client)
-
-    this.eventBus.publish(
-      new TurtleConnectedEvent({
-        // TODO make this safe, implement validation
-        x: parseInt(params.get('x')),
-        y: parseInt(params.get('y')),
-        z: parseInt(params.get('z')),
-        bearing: parseInt(params.get('bearing')),
-        label,
-      }),
-    )
-
-    this.logger.verbose(`Turtle ${label} has connected.`)
+    this.logger.verbose(`Turtle ${payload.label} has connected.`)
 
     fromEvent<MessageEvent>(client, 'onmessage')
       .pipe(takeUntil(fromEvent(client, 'onclose'))) // avoid mem leak, release listener if disconnection occurred
       .subscribe((e) => {
         this.eventBus.publish(
           // TODO add try catch if JSON.parse fails
-          new TurtleIncomingMessageReceived(label, JSON.parse(e.data)),
+          new TurtleIncomingMessageReceived(payload.label, JSON.parse(e.data)),
         )
       })
   }
