@@ -6,8 +6,8 @@ import {
 } from '@nestjs/websockets'
 import { IncomingMessage } from 'http'
 import { URL } from 'url'
-import { TurtleConnectedEvent } from './events/turtle-connected.event'
-import { TurtleDisconnectedEvent } from './events/turtle-disconnected.event'
+import { TurtleConnectedEvent } from '../events/turtle-connected.event'
+import { TurtleDisconnectedEvent } from '../events/turtle-disconnected.event'
 import { TurtleClientPoolService } from './turtle-client-pool/turtle-client-pool.service'
 
 @WebSocketGateway()
