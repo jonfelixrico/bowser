@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs/operators'
 import { TurtleConnectedEvent } from 'src/events/turtle-connected.event'
 import { TurtleDisconnectedEvent } from 'src/events/turtle-disconnected.event'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
-import { TurtleClientPoolService } from 'src/gateways/turtle-client-pool/turtle-client-pool.service'
+import { TurtleClientPoolService } from 'src/websockets/turtle-client-pool/turtle-client-pool.service'
 
 @WebSocketGateway()
 export class TurtleWsGateway
