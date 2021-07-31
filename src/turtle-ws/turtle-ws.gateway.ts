@@ -13,15 +13,6 @@ import { TurtleConnectedEvent } from '../events/turtle-connected.event'
 import { TurtleDisconnectedEvent } from '../events/turtle-disconnected.event'
 import { TurtleClientPoolService } from './turtle-client-pool/turtle-client-pool.service'
 
-interface ITurtleData {
-  label: string
-  x: number
-  y: number
-  z: number
-  bearing: number
-  fuelLevel: number
-}
-
 @WebSocketGateway()
 export class TurtleWsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -53,21 +44,19 @@ export class TurtleWsGateway
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
     const [incomingMessage] = args
     const { headers } = incomingMessage
+    const turtleId = headers['turtle-id'] as string
 
-    // TODO add error handling here if JSON.parse fails
-    const payload: ITurtleData = JSON.parse(headers['turtle-data'] as string)
+    this.eventBus.publish(new TurtleConnectedEvent(turtleId))
 
-    this.eventBus.publish(new TurtleConnectedEvent(payload))
-
-    this.pool.add(payload.label, client)
-    this.logger.verbose(`Turtle ${payload.label} has connected.`)
+    this.pool.add(turtleId, client)
+    this.logger.verbose(`Turtle ${turtleId} has connected.`)
 
     fromEvent<MessageEvent>(client, 'onmessage')
       .pipe(takeUntil(fromEvent(client, 'onclose'))) // avoid mem leak, release listener if disconnection occurred
       .subscribe((e) => {
         this.eventBus.publish(
           // TODO add try catch if JSON.parse fails
-          new TurtleIncomingMessageReceived(payload.label, JSON.parse(e.data)),
+          new TurtleIncomingMessageReceived(turtleId, JSON.parse(e.data)),
         )
       })
   }
