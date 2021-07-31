@@ -61,8 +61,8 @@ export class TurtleWsGateway
     this.pool.add(turtleId, client)
     this.logger.verbose(`Turtle ${turtleId} has connected.`)
 
-    fromEvent<MessageEvent>(client, 'onmessage')
-      .pipe(takeUntil(fromEvent(client, 'onclose'))) // avoid mem leak, release listener if disconnection occurred
+    fromEvent<MessageEvent>(client, 'message')
+      .pipe(takeUntil(fromEvent(client, 'close'))) // avoid mem leak, release listener if disconnection occurred
       .subscribe((e) => {
         const body = JSON.parse(e.data) as ITurtleMessageBody
 
