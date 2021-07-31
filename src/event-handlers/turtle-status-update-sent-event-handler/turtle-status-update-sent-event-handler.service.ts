@@ -30,12 +30,17 @@ export class TurtleStatusUpdateSentEventHandlerService
   ) {}
 
   handle({ turtleId, payload }: TurtleIncomingMessageReceived<IStatus>) {
-    this.repo.updateStatus(turtleId, payload)
+    const status = {
+      ...payload,
+      timestamp: new Date(),
+    }
+
+    this.repo.updateStatus(turtleId, status)
     // TODO send to specific streams next time
 
     this.sse.broadcast({
       id: turtleId,
-      ...payload,
+      ...status,
     })
 
     this.logger.verbose(

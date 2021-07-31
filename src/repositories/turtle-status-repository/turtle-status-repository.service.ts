@@ -8,6 +8,7 @@ export interface ITurtleStatus {
   fuelLevel: number
   fuelLimit: number
   label: string
+  timestamp: Date
 }
 
 export interface IStoredTurtleStatus extends ITurtleStatus {
