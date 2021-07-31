@@ -6,6 +6,7 @@ import { CommandHandlersModule } from './command-handlers/command-handlers.modul
 import { WebsocketsModule } from './websockets/websockets.module'
 import { RepositoriesModule } from './repositories/repositories.module'
 import { EventHandlersModule } from './event-handlers/event-handlers.module'
+import { ServicesModule } from './services/services.module'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EventHandlersModule } from './event-handlers/event-handlers.module'
     WebsocketsModule,
     RepositoriesModule,
     EventHandlersModule,
+    ServicesModule,
   ],
 })
 export class AppModule {}
