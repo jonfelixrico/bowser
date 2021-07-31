@@ -14,7 +14,7 @@ import { TurtleDisconnectedEvent } from 'src/events/turtle-disconnected.event'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
 import { TurtleClientPoolService } from 'src/websockets/turtle-client-pool/turtle-client-pool.service'
 
-const WS_URL_REGEXP = /\/?(.*)/
+const WS_URL_REGEXP = /\/*(.*)/
 
 interface ITurtleMessageBody<T = unknown> {
   type: string
