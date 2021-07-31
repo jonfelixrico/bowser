@@ -13,6 +13,11 @@ import { TurtleDisconnectedEvent } from 'src/events/turtle-disconnected.event'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
 import { TurtleClientPoolService } from 'src/websockets/turtle-client-pool/turtle-client-pool.service'
 
+interface ITurtleMessageBody<T = unknown> {
+  type: string
+  payload: T
+}
+
 @WebSocketGateway()
 export class TurtleWsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
@@ -54,9 +59,11 @@ export class TurtleWsGateway
     fromEvent<MessageEvent>(client, 'onmessage')
       .pipe(takeUntil(fromEvent(client, 'onclose'))) // avoid mem leak, release listener if disconnection occurred
       .subscribe((e) => {
+        const body = JSON.parse(e.data) as ITurtleMessageBody
+
         this.eventBus.publish(
           // TODO add try catch if JSON.parse fails
-          new TurtleIncomingMessageReceived(turtleId, JSON.parse(e.data)),
+          new TurtleIncomingMessageReceived(turtleId, body.type, body.payload),
         )
       })
   }
