@@ -4,6 +4,7 @@ import { EventBus, IEventHandler, ofType } from '@nestjs/cqrs'
 import { filter } from 'rxjs/operators'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
 import { TurtleStatusRepositoryService } from 'src/repositories/turtle-status-repository/turtle-status-repository.service'
+import { SseStreamsService } from 'src/services/sse-streams/sse-streams.service'
 
 interface IStatus {
   x: number
@@ -25,10 +26,18 @@ export class TurtleStatusUpdateSentEventHandlerService
     private eventBus: EventBus,
     private repo: TurtleStatusRepositoryService,
     private logger: Logger,
+    private sse: SseStreamsService,
   ) {}
 
   handle({ turtleId, payload }: TurtleIncomingMessageReceived<IStatus>) {
     this.repo.updateStatus(turtleId, payload)
+    // TODO send to specific streams next time
+
+    this.sse.broadcast({
+      id: turtleId,
+      ...payload,
+    })
+
     this.logger.verbose(
       `Updated the status of turtle ${turtleId}/${payload.label}`,
       TurtleStatusUpdateSentEventHandlerService.name,
