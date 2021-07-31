@@ -26,6 +26,6 @@ export class TurtleStatusRepositoryService {
   }
 
   get statusMap() {
-    return Object.freeze(this.store)
+    return { ...this.store }
   }
 }
