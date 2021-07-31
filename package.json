@@ -29,6 +29,7 @@
     "@nestjs/platform-ws": "^8.0.5",
     "@nestjs/websockets": "^8.0.5",
     "nest-winston": "^1.5.0",
+    "query-string": "^7.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
