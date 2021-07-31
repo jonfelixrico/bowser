@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config'
 import { CommandHandlersModule } from './command-handlers/command-handlers.module'
 import { WebsocketsModule } from './websockets/websockets.module'
 import { RepositoriesModule } from './repositories/repositories.module'
+import { EventHandlersModule } from './event-handlers/event-handlers.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RepositoriesModule } from './repositories/repositories.module'
     CommandHandlersModule,
     WebsocketsModule,
     RepositoriesModule,
+    EventHandlersModule,
   ],
 })
 export class AppModule {}
