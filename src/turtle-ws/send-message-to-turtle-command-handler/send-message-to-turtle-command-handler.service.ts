@@ -10,7 +10,7 @@ export class SendMessageToTurtleCommandHandlerService
   constructor(private pool: TurtleClientPoolService, private logger: Logger) {}
 
   execute(command: SendMessageToTurtleCommand): Promise<any> {
-    const { label, message } = command.payload
+    const { turtleId: label, message } = command.payload
 
     const entry = this.pool.findViaKey(label)
     if (!entry) {

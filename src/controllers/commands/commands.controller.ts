@@ -15,7 +15,7 @@ export class CommandsController {
     for (const { label, instructions } of commands) {
       await this.commandBus.execute(
         new SendMessageToTurtleCommand({
-          label,
+          turtleId: label,
           message: JSON.stringify(instructions),
         }),
       )

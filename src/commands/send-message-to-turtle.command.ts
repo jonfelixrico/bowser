@@ -1,7 +1,7 @@
 import { ICommand } from '@nestjs/cqrs'
 
 interface ISendMessageToTurtleCommandPayload {
-  label: string
+  turtleId: string
   message: string
 }
 
