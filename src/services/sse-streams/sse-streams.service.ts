@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Subject } from 'rxjs'
-import { filter, takeUntil } from 'rxjs/operators'
+import { filter, map, takeUntil } from 'rxjs/operators'
 
 interface ISseSubjectPayload<T = unknown> {
   id?: string
@@ -29,10 +29,11 @@ export class SseStreamsService {
     })
   }
 
-  getStream(id: string) {
+  getStream<T = unknown>(id: string) {
     return this.main$.pipe(
       filter((e) => !id || id === e.id),
       takeUntil(this.close$.pipe(filter((closedId) => id === closedId))),
+      map(({ payload }) => payload as T),
     )
   }
 }
