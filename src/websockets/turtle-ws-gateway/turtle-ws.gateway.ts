@@ -8,10 +8,13 @@ import {
 import { IncomingMessage } from 'http'
 import { fromEvent } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
+import { parse } from 'query-string'
 import { TurtleConnectedEvent } from 'src/events/turtle-connected.event'
 import { TurtleDisconnectedEvent } from 'src/events/turtle-disconnected.event'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
 import { TurtleClientPoolService } from 'src/websockets/turtle-client-pool/turtle-client-pool.service'
+
+const WS_URL_REGEXP = /\/?(.*)/
 
 interface ITurtleMessageBody<T = unknown> {
   type: string
@@ -48,8 +51,10 @@ export class TurtleWsGateway
 
   handleConnection(client: WebSocket, ...args: [IncomingMessage]) {
     const [incomingMessage] = args
-    const { headers } = incomingMessage
-    const turtleId = headers['turtle-id'] as string
+
+    const queryString = WS_URL_REGEXP.exec(incomingMessage.url)[1]
+    const queryParams = parse(queryString)
+    const turtleId = queryParams.id as string
 
     this.eventBus.publish(new TurtleConnectedEvent(turtleId))
 
