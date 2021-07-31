@@ -3,6 +3,7 @@ import { TurtleClientPoolService } from './gateways/turtle-client-pool/turtle-cl
 import { CqrsModule } from '@nestjs/cqrs'
 import { SendMessageToTurtleCommandHandlerService } from './command-handlers/send-message-to-turtle-command-handler/send-message-to-turtle-command-handler.service'
 import { TurtleWsGateway } from './gateways/turtle-ws-gateway/turtle-ws.gateway'
+import { TurtleStatusRepositoryService } from './repositories/turtle-status-repository/turtle-status-repository.service'
 
 @Module({
   imports: [CqrsModule],
@@ -10,6 +11,7 @@ import { TurtleWsGateway } from './gateways/turtle-ws-gateway/turtle-ws.gateway'
     TurtleWsGateway,
     TurtleClientPoolService,
     SendMessageToTurtleCommandHandlerService,
+    TurtleStatusRepositoryService,
   ],
 })
 export class TurtleModule {}
