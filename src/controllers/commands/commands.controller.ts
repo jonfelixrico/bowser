@@ -12,7 +12,7 @@ export class CommandsController {
   async sendCommand(@Body() { commands }: SendCommandDto) {
     commands = commands || []
 
-    for (const { label, instructions } of commands) {
+    for (const { label, actions: instructions } of commands) {
       await this.commandBus.execute(
         new SendMessageToTurtleCommand({
           turtleId: label,

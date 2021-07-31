@@ -1,11 +1,11 @@
-export interface ISentCommand {
+export interface ITurtleCommand {
   label: string
-  instructions: {
-    type: string
+  actions: {
+    action: string
     args: Array<number | string>
   }[]
 }
 
 export class SendCommandDto {
-  commands: ISentCommand[]
+  commands: ITurtleCommand[]
 }
