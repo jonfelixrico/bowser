@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-interface ITurtleStatus {
+export interface ITurtleStatus {
   x: number
   y: number
   z: number
@@ -10,7 +10,7 @@ interface ITurtleStatus {
   label: string
 }
 
-interface IStoredTurtleStatus extends ITurtleStatus {
+export interface IStoredTurtleStatus extends ITurtleStatus {
   id: string
 }
 
