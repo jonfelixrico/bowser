@@ -12,4 +12,4 @@ import { SendMessageToTurtleCommandHandlerService } from './send-message-to-turt
     SendMessageToTurtleCommandHandlerService,
   ],
 })
-export class TurtleWsModule {}
+export class TurtleModule {}

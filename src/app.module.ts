@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { TurtleWsModule } from './turtle-ws/turtle-ws.module'
+import { TurtleModule } from './turtle/turtle.module'
 import { ControllersModule } from './controllers/controllers.module'
 import { LoggerModule } from './logger/logger.module'
 import { ConfigModule } from '@nestjs/config'
@@ -11,7 +11,7 @@ import { ConfigModule } from '@nestjs/config'
       isGlobal: true,
     }),
     LoggerModule,
-    TurtleWsModule,
+    TurtleModule,
     ControllersModule,
   ],
 })
