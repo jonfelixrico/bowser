@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common'
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { SendMessageToTurtleCommand } from 'src/commands/send-message-to-turtle.command'
-import { TurtleClientPoolService } from '../turtle-client-pool/turtle-client-pool.service'
+import { TurtleClientPoolService } from '../gateways/turtle-client-pool/turtle-client-pool.service'
 
 @CommandHandler(SendMessageToTurtleCommand)
 export class SendMessageToTurtleCommandHandlerService
