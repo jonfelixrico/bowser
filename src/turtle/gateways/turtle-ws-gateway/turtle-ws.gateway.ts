@@ -8,10 +8,10 @@ import {
 import { IncomingMessage } from 'http'
 import { fromEvent } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
+import { TurtleConnectedEvent } from 'src/events/turtle-connected.event'
+import { TurtleDisconnectedEvent } from 'src/events/turtle-disconnected.event'
 import { TurtleIncomingMessageReceived } from 'src/events/turtle-incoming-message-received.event'
-import { TurtleConnectedEvent } from '../events/turtle-connected.event'
-import { TurtleDisconnectedEvent } from '../events/turtle-disconnected.event'
-import { TurtleClientPoolService } from './turtle-client-pool/turtle-client-pool.service'
+import { TurtleClientPoolService } from 'src/turtle/turtle-client-pool/turtle-client-pool.service'
 
 @WebSocketGateway()
 export class TurtleWsGateway
