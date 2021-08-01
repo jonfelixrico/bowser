@@ -2,9 +2,16 @@ import { Injectable } from '@nestjs/common'
 import { Subject } from 'rxjs'
 import { filter, map, takeUntil } from 'rxjs/operators'
 
-interface ISseSubjectPayload<T = unknown> {
+export interface IMessageEvent<T = unknown> {
+  data: T
   id?: string
-  payload: T
+  type?: string
+  retry?: number
+}
+
+interface ISseSubjectPayload<T = unknown> {
+  streamId?: string
+  event: IMessageEvent<T>
 }
 
 @Injectable()
@@ -16,24 +23,24 @@ export class SseStreamsService {
     this.close$.next(id)
   }
 
-  sendToStream(id: string, payload: unknown) {
+  sendToStream(streamId: string, event: IMessageEvent) {
     this.main$.next({
-      id,
-      payload,
+      streamId,
+      event: event,
     })
   }
 
-  broadcast(payload: unknown) {
+  broadcast(event: IMessageEvent) {
     this.main$.next({
-      payload,
+      event,
     })
   }
 
-  getStream<T = unknown>(id: string) {
+  getStream(id: string) {
     return this.main$.pipe(
-      filter((e) => !id || id === e.id),
+      filter((e) => !id || id === e.streamId),
       takeUntil(this.close$.pipe(filter((closedId) => id === closedId))),
-      map(({ payload }) => payload as T),
+      map(({ event }) => event),
     )
   }
 }

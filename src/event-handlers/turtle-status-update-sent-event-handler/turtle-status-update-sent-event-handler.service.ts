@@ -39,8 +39,11 @@ export class TurtleStatusUpdateSentEventHandlerService
     // TODO send to specific streams next time
 
     this.sse.broadcast({
-      id: turtleId,
-      ...status,
+      type: 'TURTLE_STATUS_UPDATE',
+      data: {
+        id: turtleId,
+        ...status,
+      },
     })
 
     this.logger.verbose(

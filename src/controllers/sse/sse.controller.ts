@@ -7,7 +7,14 @@ export class SseController {
 
   @Sse()
   createSse() {
-    // TODO make the stream id unique per session
-    return this.streams.getStream('hardcoded-value')
+    const stream = this.streams.getStream('hardcoded-value')
+    try {
+      return stream
+    } finally {
+      this.streams.sendToStream('hardcoded-value', {
+        type: 'CONNECTION_ACK',
+        data: 'ok',
+      })
+    }
   }
 }
