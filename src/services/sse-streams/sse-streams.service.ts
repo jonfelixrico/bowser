@@ -4,9 +4,11 @@ import { filter, map, takeUntil } from 'rxjs/operators'
 
 export interface IMessageEvent<T = unknown> {
   data: T
-  id?: string
-  type?: string
-  retry?: number
+}
+
+export interface ISseMessage<T = unknown> {
+  type: string
+  data?: T
 }
 
 interface ISseSubjectPayload<T = unknown> {
@@ -23,16 +25,20 @@ export class SseStreamsService {
     this.close$.next(id)
   }
 
-  sendToStream(streamId: string, event: IMessageEvent) {
+  sendToStream(streamId: string, message: ISseMessage) {
     this.main$.next({
       streamId,
-      event: event,
+      event: {
+        data: message,
+      },
     })
   }
 
-  broadcast(event: IMessageEvent) {
+  broadcast(message: ISseMessage) {
     this.main$.next({
-      event,
+      event: {
+        data: message,
+      },
     })
   }
 
