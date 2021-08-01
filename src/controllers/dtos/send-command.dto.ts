@@ -1,5 +1,5 @@
 export interface ITurtleCommand {
-  label: string
+  id: string
   actions: {
     action: string
     args: Array<number | string>
