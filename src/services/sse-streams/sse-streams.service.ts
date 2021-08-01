@@ -36,10 +36,10 @@ export class SseStreamsService {
     })
   }
 
-  getStream(id: string) {
+  getStream(streamId: string) {
     return this.main$.pipe(
-      filter((e) => !id || id === e.streamId),
-      takeUntil(this.close$.pipe(filter((closedId) => id === closedId))),
+      filter((e) => !e.streamId || streamId === e.streamId),
+      takeUntil(this.close$.pipe(filter((closedId) => streamId === closedId))),
       map(({ event }) => event),
     )
   }
