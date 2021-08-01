@@ -1,9 +1,11 @@
+export interface IAction {
+  action: string
+  args: Array<number | string>
+}
+
 export interface ITurtleCommand {
   id: string
-  actions: {
-    action: string
-    args: Array<number | string>
-  }[]
+  actions: IAction[]
 }
 
 export class SendCommandDto {
